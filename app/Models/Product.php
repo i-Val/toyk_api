@@ -16,8 +16,8 @@ class Product extends Model
         'title',
         'description',
         'price',
-        'currency_code',
         'status',
+        'currency_code',
         'contact',
         'expiry',
         'lat',
@@ -31,6 +31,15 @@ class Product extends Model
         'ad_type',
         'is_featured',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'status' => 'boolean',
+            'is_featured' => 'boolean',
+            'expiry' => 'date',
+        ];
+    }
 
     public function category()
     {

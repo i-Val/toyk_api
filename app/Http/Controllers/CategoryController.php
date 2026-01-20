@@ -45,4 +45,19 @@ class CategoryController extends Controller
         $category->delete();
         return response()->json(['message' => 'Category deleted successfully']);
     }
+
+    public function allForAdmin()
+    {
+        $categories = Category::orderBy('title')->get(['id', 'title']);
+
+        return response()->json([
+            'status' => true,
+            'data' => $categories->map(function (Category $category) {
+                return [
+                    'id' => $category->id,
+                    'name' => $category->title,
+                ];
+            }),
+        ]);
+    }
 }

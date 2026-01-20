@@ -113,6 +113,16 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
+        $user = $request->user();
+
+        $activeMembership = $user->currentMembership;
+
+        if (!$activeMembership) {
+            return response()->json([
+                'message' => 'You need an active subscription to post a product.',
+            ], 403);
+        }
+
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',

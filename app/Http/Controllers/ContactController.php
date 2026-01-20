@@ -26,6 +26,13 @@ class ContactController extends Controller
         return response()->json(['message' => 'Message sent successfully', 'data' => $contact], 201);
     }
 
+    public function show($id)
+    {
+        $contact = Contact::findOrFail($id);
+
+        return response()->json($contact);
+    }
+
     public function destroy($id)
     {
         $contact = Contact::findOrFail($id);

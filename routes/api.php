@@ -16,6 +16,7 @@ use App\Http\Controllers\FollowController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\HomeSettingController;
 use App\Http\Controllers\AdminSlideController;
+use App\Http\Controllers\StoreController;
 use App\Http\Controllers\CurrencyController;
 use App\Http\Controllers\CountryController;
 use App\Http\Controllers\StateController;
@@ -27,6 +28,7 @@ use Illuminate\Support\Facades\Route;
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/products', [ProductController::class, 'index']);
+Route::get('/products/create', [ProductController::class, 'create']);
 Route::get('/products/{id}', [ProductController::class, 'show']);
 Route::get('/products/{id}/reviews', [ReviewController::class, 'index']);
 Route::get('/categories', [CategoryController::class, 'index']);
@@ -37,6 +39,7 @@ Route::get('/plans', [MembershipPlanController::class, 'index']);
 Route::get('/blog', [BlogPostController::class, 'index']);
 Route::get('/blog/{slug}', [BlogPostController::class, 'show']);
 Route::get('/slides', [AdminSlideController::class, 'active']);
+Route::get('/stores/{slug}', [StoreController::class, 'show']);
 
 Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function () {
     Route::get('/stats', [AdminController::class, 'stats']);
@@ -150,6 +153,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/wishlists', [WishlistController::class, 'index']);
     Route::post('/products/{id}/report', [ReportedAdController::class, 'store']);
     
+    // Store Management
+    Route::get('/my-stores', [StoreController::class, 'index']);
+    Route::post('/stores', [StoreController::class, 'store']);
+    Route::post('/stores/{id}', [StoreController::class, 'update']);
+    Route::delete('/stores/{id}', [StoreController::class, 'destroy']);
+
     // User Profile
     Route::put('/profile', [AuthController::class, 'updateProfile']);
     Route::delete('/profile', [AuthController::class, 'deleteAccount']);
@@ -168,5 +177,3 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/subscribe/init', [MembershipPlanController::class, 'initiatePaystack']);
     Route::post('/subscribe/verify', [MembershipPlanController::class, 'verifyPaystack']);
 });
-
-Route::get('/form-data', [ProductController::class, 'create']);

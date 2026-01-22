@@ -30,6 +30,10 @@ class ProductController extends Controller
             $query->where('category_id', $request->input('category_id'));
         }
 
+        if ($request->filled('store_id')) {
+            $query->where('store_id', $request->input('store_id'));
+        }
+
         if ($request->filled('product_type_id')) {
             $query->where('product_type_id', $request->input('product_type_id'));
         }
@@ -105,10 +109,17 @@ class ProductController extends Controller
 
     public function create()
     {
-        return response()->json([
+        $data = [
             'categories' => Category::all(),
             'types' => ProductType::all()
-        ]);
+        ];
+
+        $user = Auth::guard('sanctum')->user();
+        if ($user) {
+            $data['stores'] = $user->stores()->select('id', 'name')->get();
+        }
+
+        return response()->json($data);
     }
 
     public function store(Request $request)
@@ -128,6 +139,7 @@ class ProductController extends Controller
             'description' => 'nullable|string',
             'price' => 'required|numeric',
             'category_id' => 'required|exists:categories,id',
+            'store_id' => 'nullable|exists:stores,id',
             'product_type_id' => 'required|exists:product_types,id',
             'contact' => 'required|string',
             'expiry' => 'nullable|date',
@@ -136,11 +148,19 @@ class ProductController extends Controller
             'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
 
+        if (!empty($validated['store_id'])) {
+            $store = $request->user()->stores()->find($validated['store_id']);
+            if (!$store) {
+                return response()->json(['message' => 'Invalid store selected.'], 403);
+            }
+        }
+
         $product = $request->user()->products()->create([
             'title' => $validated['title'],
             'description' => $validated['description'] ?? null,
             'price' => $validated['price'],
             'category_id' => $validated['category_id'],
+            'store_id' => $validated['store_id'] ?? null,
             'product_type_id' => $validated['product_type_id'],
             'contact' => $validated['contact'],
             'expiry' => $validated['expiry'] ?? null,

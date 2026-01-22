@@ -56,6 +56,17 @@ class MembershipPlanController extends Controller
 
         $data = $response->json('data');
 
+        // Paystack response structure:
+        // {
+        //   "status": true,
+        //   "message": "Authorization URL created",
+        //   "data": {
+        //     "authorization_url": "https://checkout.paystack.com/...",
+        //     "access_code": "...",
+        //     "reference": "..."
+        //   }
+        // }
+
         Payment::create([
             'user_id' => $user->id,
             'amount' => $plan->price,
@@ -67,7 +78,8 @@ class MembershipPlanController extends Controller
         ]);
 
         return response()->json([
-            'authorization_url' => $data['authorization_url'] ?? null,
+            'authorization_url' => isset($data['authorization_url']) ? trim($data['authorization_url']) : null,
+            'access_code' => $data['access_code'] ?? null,
             'reference' => $data['reference'] ?? null,
         ]);
     }

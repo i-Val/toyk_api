@@ -40,5 +40,10 @@ return [
         'public_key' => env('PAYSTACK_PUBLIC_KEY'),
         'callback_url' => env('PAYSTACK_CALLBACK_URL', 'http://localhost:5174/paystack/callback'),
     ],
+    'flutterwave' => [
+        'secret_key' => env('FLW_SECRET_KEY'),
+        'public_key' => env('FLW_PUBLIC_KEY'),
+        'encryption_key' => env('FLW_ENCRYPTION_KEY'),
+    ],
 
 ];

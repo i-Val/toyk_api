@@ -174,6 +174,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/payments', [PaymentController::class, 'index']);
 
     // Membership
-    Route::post('/subscribe/init', [MembershipPlanController::class, 'initiatePaystack']);
-    Route::post('/subscribe/verify', [MembershipPlanController::class, 'verifyPaystack']);
+    Route::post('/subscribe/init', [MembershipPlanController::class, 'initiatePayment']);
+    Route::post('/subscribe/verify', [MembershipPlanController::class, 'verifyPayment']);
 });
